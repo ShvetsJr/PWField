@@ -9,17 +9,24 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    lazy var passwordField = PWField()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        view.addSubview(passwordField)
+        passwordField.frame = CGRect(x: UIScreen.main.bounds.width * 0.1, y: UIScreen.main.bounds.height / 2 - 27, width: UIScreen.main.bounds.width * 0.8, height: 55)
+        
+        view.backgroundColor = .white
+        
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAway)))
+        
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @objc func tapAway() {
+        self.view.endEditing(true)
     }
-
 
 }
 
