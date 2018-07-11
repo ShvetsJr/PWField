@@ -10,19 +10,16 @@ import UIKit
 
 class PWFieldButton: UIButton {
     
+    var delegate: PWField
+    
     var onPress: (() -> ())?
     
-    let blue = UIColor(red: 0.364706, green: 0.862745, blue: 0.952941, alpha: 1)
-    let red = UIColor(red: 0.172549, green: 0.823529, blue: 0.435294, alpha: 1)
-    let green = UIColor(red:0.03, green:0.93, blue:0.35, alpha:1.0)
-    
-    override init(frame: CGRect) {
+    init(_ delegate: PWField) {
+        self.delegate = delegate
         super.init(frame: .zero)
-       
+        
         self.addTarget(self, action: #selector(complition), for: .touchUpInside)
-        
-        backgroundColor = blue
-        
+        backgroundColor = delegate.blue
     }
     
     @objc private func complition() {
@@ -30,17 +27,21 @@ class PWFieldButton: UIButton {
     }
     
     func reset() {
-        self.backgroundColor = blue
+        self.backgroundColor = delegate.blue
     }
     
     func fail() {
-        self.backgroundColor = red
+        self.backgroundColor = delegate.red
     }
     
     func success() {
-        self.backgroundColor = green
+        animateIn()
+        
+    }
     
-        guard let parentView = superview else { return }
+    func animateIn() {
+        
+        guard let parentView = superview as? PWField else { return }
         
         let fieldFrame = parentView.frame
         let circleFrame = self.frame
@@ -53,9 +54,9 @@ class PWFieldButton: UIButton {
         let endShape = UIBezierPath(roundedRect: CGRect(x: animationEndPoint.x, y: animationEndPoint.y, width: fieldFrame.width, height: fieldFrame.height), cornerRadius: 25).cgPath
         circleLayer.path = startPath
         circleLayer.position = CGPoint(x: circleFrame.origin.x, y: circleFrame.origin.y)
-        circleLayer.fillColor = green.cgColor
+        circleLayer.fillColor = delegate.green.cgColor
         parentView.layer.addSublayer(circleLayer)
-
+        
         let animation = CABasicAnimation(keyPath: "path")
         animation.toValue = endShape
         animation.duration = 0.2
@@ -63,6 +64,11 @@ class PWFieldButton: UIButton {
         animation.fillMode = kCAFillModeBoth
         animation.isRemovedOnCompletion = true
         circleLayer.add(animation, forKey: animation.keyPath)
+        
+    }
+    
+    func animateOut() {
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -19,7 +19,7 @@ class PWField: UITextField {
 
     // Views
     lazy var placeholderLabel = self.makeLabel()
-    var actionButton = PWFieldButton()
+    lazy var actionButton = PWFieldButton(self)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +31,7 @@ class PWField: UITextField {
         placeholderLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
         // Add action button
+        actionButton.delegate = self
         self.addSubview(actionButton)
         actionButton.onPress = {
             self.actionButton.success()
