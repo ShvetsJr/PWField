@@ -17,7 +17,7 @@ class PWField: UITextField {
 
     // Views
     lazy var placeholderLabel = self.makeLabel()
-    lazy var actionButton = self.makeActionButton()
+    var actionButton: PWFieldButton!
     
     // Configurtions
     var cornerRadius: CGFloat = 25
@@ -27,6 +27,7 @@ class PWField: UITextField {
     var textInsets: UIEdgeInsets = .zero
     var selfFrame: CGRect = .zero {
         didSet {
+            if selfFrame == .zero { return }
             textInsets = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 70)
             self.addActionButton()
             setNeedsDisplay()
@@ -38,7 +39,6 @@ class PWField: UITextField {
         
         // Add placeholder title
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(placeholderLabel)
         placeholderLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 25).isActive = true
         placeholderLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
@@ -54,19 +54,20 @@ class PWField: UITextField {
         
     }
     
+    @objc func fakeAPICall() {
+        actionButton.success()
+    }
+    
     func addActionButton() {
-        
+        actionButton = PWFieldButton(superFrame: selfFrame)
         self.addSubview(actionButton)
-        actionButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true
-        actionButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        actionButton.widthAnchor.constraint(equalToConstant: selfFrame.height * 0.7).isActive = true
-        actionButton.heightAnchor.constraint(equalToConstant: selfFrame.height * 0.7).isActive = true
-        actionButton.layer.cornerRadius = selfFrame.height * 0.7 / 2
-        
+        actionButton.pressed = {
+            self.actionButton.success()
+        }
     }
     
     override func layoutSubviews() {
-        if self.selfFrame != .zero {
+        if self.selfFrame == .zero {
             self.selfFrame = self.frame.width != 0 ? self.frame : .zero
         }
     }
@@ -137,13 +138,6 @@ private extension PWField {
         l.textColor = UIColor.black.withAlphaComponent(0.25)
         l.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         return l
-    }
-    
-    func makeActionButton() -> UIButton {
-        let b = UIButton()
-        b.backgroundColor = blue
-        b.layer.masksToBounds = true
-        return b
     }
     
 }
