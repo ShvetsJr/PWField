@@ -10,39 +10,23 @@ import UIKit
 
 class PWFieldButton: UIButton {
     
-    var pressed: (() -> ())?
-    
-    var buttonDiameter: CGFloat = 0
-    var superFrame: CGRect = .zero {
-        didSet {
-            buttonDiameter = superFrame.height * 0.7
-            self.setNeedsLayout()
-        }
-    }
+    var onPress: (() -> ())?
     
     let blue = UIColor(red: 0.364706, green: 0.862745, blue: 0.952941, alpha: 1)
     let red = UIColor(red: 0.172549, green: 0.823529, blue: 0.435294, alpha: 1)
     let green = UIColor(red:0.03, green:0.93, blue:0.35, alpha:1.0)
     
-    init(superFrame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: .zero)
-        self.superFrame = superFrame
-        
-        self.addTarget(self, action: #selector(onPress), for: .touchUpInside)
+       
+        self.addTarget(self, action: #selector(complition), for: .touchUpInside)
         
         backgroundColor = blue
-        layer.cornerRadius = superFrame.height * 0.7 / 2
         
     }
     
-    
-    
-    override func layoutSubviews() {
-        self.frame = CGRect(x: superFrame.width - buttonDiameter - 10, y: (superFrame.height / 2) - (buttonDiameter / 2) , width: buttonDiameter, height: buttonDiameter)
-    }
-    
-    @objc private func onPress() {
-        pressed!()
+    @objc private func complition() {
+        onPress!()
     }
     
     func reset() {

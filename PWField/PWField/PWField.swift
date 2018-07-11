@@ -17,22 +17,7 @@ class PWField: UITextField {
 
     // Views
     lazy var placeholderLabel = self.makeLabel()
-    var actionButton: PWFieldButton!
-    
-    // Configurtions
-    var cornerRadius: CGFloat = 25
-    
-    // Data
-    var viewFinishedLayout: Bool = false
-    var textInsets: UIEdgeInsets = .zero
-    var selfFrame: CGRect = .zero {
-        didSet {
-            if selfFrame == .zero { return }
-            textInsets = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 70)
-            self.addActionButton()
-            setNeedsDisplay()
-        }
-    }
+    var actionButton = PWFieldButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,10 +28,17 @@ class PWField: UITextField {
         placeholderLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 25).isActive = true
         placeholderLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
+        // Add action button
+        self.addSubview(actionButton)
+        actionButton.pressed = {
+            self.actionButton.success()
+        }
+        
+        // Customize self
         self.delegate = self
         self.tintColor = .clear
         self.backgroundColor = .white
-        self.layer.cornerRadius = self.cornerRadius
+        self.layer.cornerRadius = 25
         self.layer.shadowColor = UIColor.black.cgColor
         self.layer.shadowOffset = CGSize(width: 0, height: 1)
         self.layer.shadowOpacity = 0.1
@@ -58,18 +50,12 @@ class PWField: UITextField {
         actionButton.success()
     }
     
-    func addActionButton() {
-        actionButton = PWFieldButton(superFrame: selfFrame)
-        self.addSubview(actionButton)
-        actionButton.pressed = {
-            self.actionButton.success()
-        }
-    }
-    
     override func layoutSubviews() {
-        if self.selfFrame == .zero {
-            self.selfFrame = self.frame.width != 0 ? self.frame : .zero
-        }
+        // Action button setup
+        let buttonDiameter = self.frame.height * 0.7
+        actionButton.frame = CGRect(x: self.frame.width - buttonDiameter - 10, y: (self.frame.height / 2) - (buttonDiameter / 2) , width: buttonDiameter, height: buttonDiameter)
+        actionButton.layer.cornerRadius = self.frame.height * 0.7 / 2
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -102,22 +88,6 @@ extension PWField: UITextFieldDelegate {
                 self.placeholderLabel.alpha = 1
             }
         }
-    }
-    
-    open override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, textInsets)
-    }
-    
-    open override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, textInsets)
-    }
-    
-    open override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, textInsets)
-    }
-    
-    open override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
     }
     
 }
