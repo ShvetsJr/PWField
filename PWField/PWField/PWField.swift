@@ -10,6 +10,8 @@ import UIKit
 
 class PWField: UITextField {
     
+    static let buttonSideOffset = CGFloat(10)
+    
     // Colors
     let blue = UIColor(red: 0.364706, green: 0.862745, blue: 0.952941, alpha: 1)
     let red = UIColor(red: 0.172549, green: 0.823529, blue: 0.435294, alpha: 1)
@@ -30,7 +32,7 @@ class PWField: UITextField {
         
         // Add action button
         self.addSubview(actionButton)
-        actionButton.pressed = {
+        actionButton.onPress = {
             self.actionButton.success()
         }
         
@@ -53,7 +55,8 @@ class PWField: UITextField {
     override func layoutSubviews() {
         // Action button setup
         let buttonDiameter = self.frame.height * 0.7
-        actionButton.frame = CGRect(x: self.frame.width - buttonDiameter - 10, y: (self.frame.height / 2) - (buttonDiameter / 2) , width: buttonDiameter, height: buttonDiameter)
+        
+        actionButton.frame = CGRect(x: self.frame.width - buttonDiameter - PWField.buttonSideOffset, y: (self.frame.height / 2) - (buttonDiameter / 2) , width: buttonDiameter, height: buttonDiameter)
         actionButton.layer.cornerRadius = self.frame.height * 0.7 / 2
         
     }
